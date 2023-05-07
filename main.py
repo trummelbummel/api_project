@@ -2,7 +2,7 @@
 Code to run the REST API for the Census Data Salaray prediction.
 '''
 import pickle
-from typing import Any, List
+from typing import Any, List, Union
 
 import pandas as pd
 from fastapi import FastAPI
@@ -29,7 +29,7 @@ CAT_FEATURES = [
 
 class ResponseItem(BaseModel):
     status_code: int
-    predictions: List[str, None] = []
+    predictions: List[Union[str, None]] = []
 
 
 class CensusData(BaseModel):
