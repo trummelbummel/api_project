@@ -1,9 +1,11 @@
-# Put the code for your API here.
+'''
+Code to run the REST API for the Census Data Salaray prediction.
+'''
 import pickle
 from typing import Any
 
 import pandas as pd
-from fastapi import Body, FastAPI
+from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
 from .ml.data import process_data
@@ -23,6 +25,7 @@ CAT_FEATURES = [
     "sex",
     "native_country",
 ]
+
 
 class ResponseItem(BaseModel):
     status_code: int
@@ -72,20 +75,22 @@ class CensusData(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the API for census data based salary prediction."}
+    return {"message": "Welcome to the API for "
+                       "census data based salary prediction."}
 
 
 @app.post("/predict", response_model=ResponseItem)
 async def predict(input: CensusData) -> Any:
     try:
         x = pd.DataFrame([dict(input)])
-        x_preprocessed, y, _, _ = process_data(x,
-                                               categorical_features=CAT_FEATURES,
-                                               label=None,
-                                               training=False,
-                                               encoder=ENCODER,
-                                               lb=LB
-                                               )
+        x_preprocessed, y, _, _ = \
+            process_data(x,
+                         categorical_features=CAT_FEATURES,
+                         label=None,
+                         training=False,
+                         encoder=ENCODER,
+                         lb=LB
+                         )
         pred = MODEL.predict(x_preprocessed)
         predictions = LB.inverse_transform(pred)
         return ResponseItem(status_code=200, predictions=predictions.tolist())

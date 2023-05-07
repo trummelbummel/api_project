@@ -34,7 +34,8 @@ def test_get(client):
     response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {
-        "message": "Welcome to the API for census data based salary prediction."}
+        "message": "Welcome to the API for "
+                   "census data based salary prediction."}
 
 
 def test_post(client):
@@ -42,21 +43,24 @@ def test_post(client):
     Test inference on model via API.
     """
 
-
-    inputs = [{'age': 48, 'workclass': 'Private', 'fnlgt': 45612, 'education': 'HS-grad',
-             ' education-num': 9, ' marital-status': 'Never-married', 'occupation': 'Adm-clerical',
-             'relationship': 'Unmarried', 'race': 'Black', 'sex': 'Female', ' capital-gain': 0, ' capital-loss': 0,
-             ' hours-per-week': 37, ' native-country': 'United-States'},
-             {'age': 51, 'workclass': 'Private', 'fnlgt': 83311, 'education': 'Masters',
-              ' education-num': 14, ' marital-status': 'Married-civ-spouse', 'occupation': 'Craft-repair',
-              'relationship': 'Husband', 'race': 'White', 'sex': 'Male', ' capital-gain': 0, ' capital-loss': 0,
-              ' hours-per-week': 40, ' native-country': 'United-States'},
-             ]
+    inputs = [{'age': 48, 'workclass': 'Private', 'fnlgt': 45612,
+               'education': 'HS-grad',
+               ' education-num': 9, ' marital-status': 'Never-married',
+               'occupation': 'Adm-clerical',
+               'relationship': 'Unmarried', 'race': 'Black',
+               'sex': 'Female', ' capital-gain': 0, ' capital-loss': 0,
+               ' hours-per-week': 37, ' native-country': 'United-States'},
+              {'age': 51, 'workclass': 'Private', 'fnlgt': 83311,
+               'education': 'Masters',
+               ' education-num': 14, ' marital-status': 'Married-civ-spouse',
+               'occupation': 'Craft-repair',
+               'relationship': 'Husband', 'race': 'White', 'sex': 'Male',
+               ' capital-gain': 0, ' capital-loss': 0,
+               ' hours-per-week': 40, ' native-country': 'United-States'},
+              ]
     results = ['<=50K', '>50K']
     for i in range(len(inputs)):
-
-        response = client.post(f"/predict", json=inputs[i])
-        print(response.json())
+        response = client.post("/predict", json=inputs[i])
         assert response.json()['status_code'] == 200
         assert response.json()['predictions'] == [results[i]]
 
@@ -75,9 +79,9 @@ def test_model_metrics():
     """
     Test metrics on sample data.
     """
-    y = [1, 1, 1, 1, 0, 0, 0, 0]
+    groundtruth = [1, 1, 1, 1, 0, 0, 0, 0]
     preds = [1, 1, 1, 0, 0, 0, 0, 1]
-    precision, recall, fbeta = compute_model_metrics(y, preds)
+    precision, recall, fbeta = compute_model_metrics(groundtruth, preds)
     assert precision == 0.75
     assert recall == 0.75
     assert fbeta == 0.75

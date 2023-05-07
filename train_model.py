@@ -1,11 +1,14 @@
-# Script to train machine learning model.
+'''
+Main script to run training of the
+model for the Census Data Salaray prediction.
+'''
 from copy import deepcopy
-import logging
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from ml.data import clean_data, process_data
-from ml.model import compute_sliced_metrics, store_model, train_model
+from .ml.data import clean_data, process_data
+from .ml.model import compute_sliced_metrics, store_model, train_model
 
 # Add the necessary imports for the starter code.
 

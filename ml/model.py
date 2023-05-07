@@ -1,3 +1,12 @@
+'''
+Implement model functionality for the
+model for the Census Data Salaray prediction.
+'''
+
+import pickle
+
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 
 
@@ -17,13 +26,43 @@ def train_model(X_train, y_train):
     model
         Trained machine learning model.
     """
+    clf = RandomForestClassifier(n_estimators=400, max_depth=2, random_state=0)
+    clf.fit(X_train, y_train)
+    return clf
 
-    pass
+
+def compute_sliced_metrics(X, y, model, category='education'):
+    """
+    Compute metrics on data slices to provide
+    insight if there is any bias.
+    Inputs
+    ------
+    model : ???
+        Trained machine learning model.
+    X : np.array
+        Data used for prediction.
+    y: np.array
+        True labels
+    category: str
+        The categorical feature on which to slice
+        data for performance evaluation
+    Returns
+        None
+    """
+    bias_dict = dict()
+    for name, group in X.groupby(category):
+        subsetlabels = y[group.index]
+        group = group.drop(category, axis=1)
+        preds = inference(model, group.values)
+        precision, recall, fbeta = compute_model_metrics(subsetlabels, preds)
+        bias_dict[name + '_' + category] = [precision, recall, fbeta]
+    return pd.DataFrame.from_dict(bias_dict)
 
 
 def compute_model_metrics(y, preds):
     """
-    Validates the trained machine learning model using precision, recall, and F1.
+    Validates the trained machine learning
+    model using precision, recall, and F1.
 
     Inputs
     ------
@@ -57,4 +96,21 @@ def inference(model, X):
     preds : np.array
         Predictions from the model.
     """
-    pass
+    predictions = model.predict(X)
+    return predictions
+
+
+def store_model(model, filename):
+    """ Run model inferences and return the predictions.
+
+    Inputs
+    ------
+    model :
+        Trained machine learning model.
+    filename : str
+        Model location to store model at
+    Returns
+    -------
+        None
+    """
+    pickle.dump(model, open(filename, 'wb'))
