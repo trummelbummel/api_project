@@ -6,9 +6,9 @@ import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 
-from .main import app
-from .ml.data import clean_data
-from .ml.model import compute_model_metrics
+from main import app
+from ml.data import clean_data
+from ml.model import compute_model_metrics
 
 
 @pytest.fixture
@@ -98,6 +98,7 @@ def test_store_model():
     filename = './model/encoder.pickle'
     os.remove(filename)
     subprocess.run(["python3", "train_model.py"])
+    print(os.listdir('./model'))
     assert 'random_forest.pickle' in os.listdir('./model')
     assert 'labelbinarizer.pickle' in os.listdir('./model')
     assert 'encoder.pickle' in os.listdir('./model')
