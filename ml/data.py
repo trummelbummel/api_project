@@ -87,7 +87,9 @@ def process_data(
     if label is not None:
         labels = data[label]
         features = data.drop([label], axis=1)
+
     else:
+        features = data
         labels = np.array([])
 
     X_categorical = features[categorical_features].values

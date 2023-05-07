@@ -60,7 +60,9 @@ def test_post(client):
               ]
     results = ['<=50K', '>50K']
     for i in range(len(inputs)):
+        print(inputs[i])
         response = client.post("/predict", json=inputs[i])
+        print(response.json())
         assert response.json()['status_code'] == 200
         assert response.json()['predictions'] == [results[i]]
 

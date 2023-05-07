@@ -91,5 +91,6 @@ async def predict(input: CensusData) -> Any:
         pred = MODEL.predict(x_preprocessed)
         predictions = LB.inverse_transform(pred)
         return ResponseItem(status_code=200, predictions=predictions.tolist())
-    except BaseException:
+    except Exception as e:
+        print('Exception', e)
         return ResponseItem(status_code=503, predictions=[None])
