@@ -5,7 +5,7 @@ model for the Census Data Salaray prediction.
 
 import pickle
 
-import pandas as pd
+import json
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 
@@ -56,7 +56,11 @@ def compute_sliced_metrics(X, y, model, category='education'):
         preds = inference(model, group.values)
         precision, recall, fbeta = compute_model_metrics(subsetlabels, preds)
         bias_dict[name + '_' + category] = [precision, recall, fbeta]
-    return pd.DataFrame.from_dict(bias_dict)
+
+    with open('./data/sliced_output.txt', 'w') as file:
+        file.write(json.dumps(bias_dict))  # use `json.loads` to do the reverse
+
+    return bias_dict
 
 
 def compute_model_metrics(y, preds):

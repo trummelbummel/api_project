@@ -7,7 +7,7 @@ For additional information see the Model Card paper: https://arxiv.org/pdf/1810.
 Responsible Developer: Theresa Fruhwuerth
 Date of training: 5.5.2023
 Model version: 1.0.0
-Model type: Random forest.
+Model type: Random forest Classifier from SKLearn library.
 Training Details:
 1. Parameters: estimators=100, max_depth=2
 
@@ -52,8 +52,11 @@ Training data contains the following variables (for more information look into :
 
 Since there is an imbalance in the target with only 25% being in the below 50k salary, 
 we rebalanced the data.
-The model is evaluated with precision, recall and f score, on the rebalanced dataset hence
-the evaluation might not be completely representative when the data is imbalanced in reality. 
+
+The model is evaluated with precision, recall and f score, on the original distribution of the test dataset
+hence  the evaluation might not be completely representative when the data is imbalanced in reality. 
+We used 20% of the original dataset i.e. 6508 of the original 32537 datapoints as evaluation data.
+
 
 ## Metrics
 _
@@ -65,12 +68,12 @@ For the remaining
 
 ## Ethical Considerations
 
-The model is clearly biased and the performance on Amer-Indian-Eskimo and Other
-is not as well as in the other classes, because the samples are underrepresented.
+The model is clearly biased and the performance on Other.
+Furthermore the Asian population seems to be easiest to predict.
 
 ## Caveats and Recommendations
 
-Best would be to collect more data for Amer-Indian-Eskimo and Other
+Best would be to collect more data for underrepresented groups
 and retrain the model. Predictions for these two classes should not be 
 used for policy decisions.
 

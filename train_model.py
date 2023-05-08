@@ -19,6 +19,11 @@ data = clean_data(data)
 # Optional enhancement, use K-fold cross validation instead of a
 # train-test split.
 train, test = train_test_split(data, test_size=0.20)
+grouped = train.groupby('salary')
+train = grouped.apply(
+        lambda group: group.sample(grouped.size().min())
+    ).reset_index(drop=True)
+
 
 cat_features = [
     "workclass",

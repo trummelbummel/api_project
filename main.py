@@ -12,9 +12,7 @@ from ml.data import process_data
 
 app = FastAPI()
 
-MODEL = pickle.load(open('./model/random_forest.pickle', 'rb'))
-ENCODER = pickle.load(open('./model/encoder.pickle', 'rb'))
-LB = pickle.load(open('./model/labelbinarizer.pickle', 'rb'))
+
 CAT_FEATURES = [
     "workclass",
     "education",
@@ -25,6 +23,13 @@ CAT_FEATURES = [
     "sex",
     "native_country",
 ]
+
+@app.on_event("startup")
+async def startup_event():
+    global MODEL, ENCODER, LB
+    MODEL = pickle.load(open('./model/random_forest.pickle', 'rb'))
+    ENCODER = pickle.load(open('./model/encoder.pickle', 'rb'))
+    LB = pickle.load(open('./model/labelbinarizer.pickle', 'rb'))
 
 
 class ResponseItem(BaseModel):

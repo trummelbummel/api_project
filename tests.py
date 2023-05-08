@@ -38,9 +38,9 @@ def test_get(client):
                    "census data based salary prediction."}
 
 
-def test_post(client):
+def test_post_lessthan50k(client):
     """
-    Test inference on model via API.
+    Test inference on model via API for case less than 50k.
     """
 
     inputs = [{'age': 48, 'workclass': 'Private', 'fnlgt': 45612,
@@ -50,7 +50,20 @@ def test_post(client):
                'relationship': 'Unmarried', 'race': 'Black',
                'sex': 'Female', ' capital-gain': 0, ' capital-loss': 0,
                ' hours-per-week': 37, ' native-country': 'United-States'},
-              {'age': 51, 'workclass': 'Private', 'fnlgt': 83311,
+              ]
+    results = ['<=50K']
+    for i in range(len(inputs)):
+        response = client.post("/predict", json=inputs[i])
+        assert response.json()['status_code'] == 200
+        assert response.json()['predictions'] == [results[i]]
+
+
+def test_post_greater50k(client):
+    """
+    Test inference on model via API.
+    """
+
+    inputs = [{'age': 51, 'workclass': 'Private', 'fnlgt': 83311,
                'education': 'Masters',
                ' education-num': 14, ' marital-status': 'Married-civ-spouse',
                'occupation': 'Craft-repair',
@@ -58,13 +71,12 @@ def test_post(client):
                ' capital-gain': 0, ' capital-loss': 0,
                ' hours-per-week': 40, ' native-country': 'United-States'},
               ]
-    results = ['<=50K', '>50K']
+    results = ['>50K']
     for i in range(len(inputs)):
-        print(inputs[i])
         response = client.post("/predict", json=inputs[i])
-        print(response.json())
         assert response.json()['status_code'] == 200
         assert response.json()['predictions'] == [results[i]]
+
 
 
 def test_clean_data(data):

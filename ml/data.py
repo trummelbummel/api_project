@@ -23,10 +23,6 @@ def clean_data(data, label='salary'):
                          element.strip(' ') if isinstance(element, str)
                          else element)
     data = data.drop_duplicates()
-    grouped = data.groupby(label)
-    data = grouped.apply(
-        lambda group: group.sample(grouped.size().min())
-    ).reset_index(drop=True)
     return data
 
 
