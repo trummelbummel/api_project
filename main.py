@@ -24,6 +24,7 @@ CAT_FEATURES = [
     "native_country",
 ]
 
+
 @app.on_event("startup")
 async def startup_event():
     global MODEL, ENCODER, LB

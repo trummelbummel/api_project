@@ -11,4 +11,3 @@ inputs = {'age': 48, 'workclass': 'Private', 'fnlgt': 45612,
 url = 'https://udactiy-api.onrender.com/prediction'
 x = requests.post(url, json=inputs, verify=True)
 print(x['status_code'])
-

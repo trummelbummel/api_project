@@ -8,7 +8,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from ml.data import clean_data, process_data
-from ml.model import compute_sliced_metrics, store_model, train_model, compute_model_metrics
+from ml.model import (compute_sliced_metrics, store_model,
+                      train_model, compute_model_metrics)
 
 # Add the necessary imports for the starter code.
 

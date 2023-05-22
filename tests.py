@@ -78,7 +78,6 @@ def test_post_greater50k(client):
         assert response.json()['predictions'] == [results[i]]
 
 
-
 def test_clean_data(data):
     """
     Test clean data removing the spaces from the columnnames.

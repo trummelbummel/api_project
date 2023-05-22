@@ -5,6 +5,7 @@ for the Census Data Salaray prediction.
 import numpy as np
 from sklearn.preprocessing import LabelBinarizer, OneHotEncoder
 
+
 def clean_data(data, label='salary'):
     """
     Takes the input data and cleans the spaces
