@@ -62,13 +62,18 @@ We used 20% of the original dataset i.e. 6508 of the original 32537 datapoints a
 _
 Please include the metrics used and your model's performance on those metrics._
 Factors for evaluation:
-Evaluation was done checking for bias based on categorical features such as education,
-The model was scoring well on preschoolers which was easy to categorize.
-For the remaining
+Evaluation was done checking for features such as race.
+
+Overall metrics are:
+
+precision:0.8307405102675793
+recall: 0.4769560557341908
+fbeta:0.6059918293236496
+  
 
 ## Ethical Considerations
 
-The model is clearly biased and the performance on Other.
+The model is clearly biased and the performance on Other group.
 Furthermore the Asian population seems to be easiest to predict.
 
 ## Caveats and Recommendations

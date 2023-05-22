@@ -8,7 +8,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from ml.data import clean_data, process_data
-from ml.model import compute_sliced_metrics, store_model, train_model
+from ml.model import compute_sliced_metrics, store_model, train_model, compute_model_metrics
 
 # Add the necessary imports for the starter code.
 
@@ -55,9 +55,15 @@ X_test, y_test, _, _ = process_data(
 # Train and save a model.
 
 model = train_model(X_train, y_train)
+y_pred = model.predict(X_test)
+
 X_test = pd.DataFrame(X_test)
 X_test['race'] = test['race']
+precision, recall, fbeta = compute_model_metrics(y_pred, y_test)
+
+
 compute_sliced_metrics(X_test, y_test, model, category='race')
+
 
 store_model(encoder, './model/encoder.pickle')
 store_model(lb, './model/labelbinarizer.pickle')
