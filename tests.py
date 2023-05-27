@@ -5,7 +5,6 @@ import subprocess
 import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
-
 from main import app
 from ml.data import clean_data
 from ml.model import compute_model_metrics
@@ -22,43 +21,41 @@ def model():
     return pickle.load(open('./model/random_forest.pickle', 'rb'))
 
 
-@pytest.fixture
-def client():
-    return TestClient(app)
 
 
-def test_get(client):
+def test_get():
     """
     Test get method on root of API.
     """
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json() == {
-        "message": "Welcome to the API for "
-                   "census data based salary prediction."}
+    with TestClient(app) as client:
+        response = client.get("/")
+        assert response.status_code == 200
+        assert response.json() == {
+            "message": "Welcome to the API for "
+                       "census data based salary prediction."}
 
 
-def test_post_lessthan50k(client):
+def test_post_lessthan50k():
     """
     Test inference on model via API for case less than 50k.
     """
+    with TestClient(app) as client:
+        inputs = [{'age': 48, 'workclass': 'Private', 'fnlgt': 45612,
+                   'education': 'HS-grad',
+                   ' education-num': 9, ' marital-status': 'Never-married',
+                   'occupation': 'Adm-clerical',
+                   'relationship': 'Unmarried', 'race': 'Black',
+                   'sex': 'Female', ' capital-gain': 0, ' capital-loss': 0,
+                   ' hours-per-week': 37, ' native-country': 'United-States'},
+                  ]
+        results = ['<=50K']
+        for i in range(len(inputs)):
+            response = client.post("/predict", json=inputs[i])
+            assert response.json()['status_code'] == 200
+            assert response.json()['predictions'] == [results[i]]
 
-    inputs = [{'age': 48, 'workclass': 'Private', 'fnlgt': 45612,
-               'education': 'HS-grad',
-               ' education-num': 9, ' marital-status': 'Never-married',
-               'occupation': 'Adm-clerical',
-               'relationship': 'Unmarried', 'race': 'Black',
-               'sex': 'Female', ' capital-gain': 0, ' capital-loss': 0,
-               ' hours-per-week': 37, ' native-country': 'United-States'},
-              ]
-    results = ['<=50K']
-    for i in range(len(inputs)):
-        response = client.post("/predict", json=inputs[i])
-        assert response.json()['status_code'] == 200
-        assert response.json()['predictions'] == [results[i]]
 
-
-def test_post_greater50k(client):
+def test_post_greater50k():
     """
     Test inference on model via API.
     """
@@ -72,10 +69,11 @@ def test_post_greater50k(client):
                ' hours-per-week': 40, ' native-country': 'United-States'},
               ]
     results = ['>50K']
-    for i in range(len(inputs)):
-        response = client.post("/predict", json=inputs[i])
-        assert response.json()['status_code'] == 200
-        assert response.json()['predictions'] == [results[i]]
+    with TestClient(app) as client:
+        for i in range(len(inputs)):
+            response = client.post("/predict", json=inputs[i])
+            assert response.json()['status_code'] == 200
+            assert response.json()['predictions'] == [results[i]]
 
 
 def test_clean_data(data):

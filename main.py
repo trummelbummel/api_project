@@ -3,15 +3,12 @@ Code to run the REST API for the Census Data Salaray prediction.
 '''
 import pickle
 from typing import Any, List, Union
-
+from contextlib import asynccontextmanager
 import pandas as pd
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
 from ml.data import process_data
-
-app = FastAPI()
-
 
 CAT_FEATURES = [
     "workclass",
@@ -24,14 +21,18 @@ CAT_FEATURES = [
     "native_country",
 ]
 
+resources = {}
+
+
+
+
+app = FastAPI()
 
 @app.on_event("startup")
 async def startup_event():
-    global MODEL, ENCODER, LB
-    MODEL = pickle.load(open('./model/random_forest.pickle', 'rb'))
-    ENCODER = pickle.load(open('./model/encoder.pickle', 'rb'))
-    LB = pickle.load(open('./model/labelbinarizer.pickle', 'rb'))
-
+    resources['model'] = pickle.load(open('./model/random_forest.pickle', 'rb'))
+    resources['encoder'] = pickle.load(open('./model/encoder.pickle', 'rb'))
+    resources['lb'] = pickle.load(open('./model/labelbinarizer.pickle', 'rb'))
 
 class ResponseItem(BaseModel):
     status_code: int
@@ -85,17 +86,18 @@ async def root():
 @app.post("/predict", response_model=ResponseItem)
 async def predict(input: CensusData) -> Any:
     try:
+        print('###', resources)
         x = pd.DataFrame([dict(input)])
         x_preprocessed, y, _, _ = \
             process_data(x,
                          categorical_features=CAT_FEATURES,
                          label=None,
                          training=False,
-                         encoder=ENCODER,
-                         lb=LB
+                         encoder=resources['encoder'],
+                         lb=resources['lb']
                          )
-        pred = MODEL.predict(x_preprocessed)
-        predictions = LB.inverse_transform(pred)
+        pred = resources['model'].predict(x_preprocessed)
+        predictions = resources['lb'].inverse_transform(pred)
         return ResponseItem(status_code=200, predictions=predictions.tolist())
     except Exception as e:
         print('Exception', e)
