@@ -21,8 +21,6 @@ def model():
     return pickle.load(open('./model/random_forest.pickle', 'rb'))
 
 
-
-
 def test_get():
     """
     Test get method on root of API.

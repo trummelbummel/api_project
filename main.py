@@ -3,7 +3,6 @@ Code to run the REST API for the Census Data Salaray prediction.
 '''
 import pickle
 from typing import Any, List, Union
-from contextlib import asynccontextmanager
 import pandas as pd
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
@@ -21,18 +20,21 @@ CAT_FEATURES = [
     "native_country",
 ]
 
+
 resources = {}
-
-
-
 
 app = FastAPI()
 
+
 @app.on_event("startup")
 async def startup_event():
-    resources['model'] = pickle.load(open('./model/random_forest.pickle', 'rb'))
-    resources['encoder'] = pickle.load(open('./model/encoder.pickle', 'rb'))
-    resources['lb'] = pickle.load(open('./model/labelbinarizer.pickle', 'rb'))
+    resources['model'] = pickle.load(
+        open('./model/random_forest.pickle', 'rb'))
+    resources['encoder'] = pickle.load(
+        open('./model/encoder.pickle', 'rb'))
+    resources['lb'] = pickle.load(
+        open('./model/labelbinarizer.pickle', 'rb'))
+
 
 class ResponseItem(BaseModel):
     status_code: int
