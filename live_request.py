@@ -8,6 +8,6 @@ inputs = {'age': 48, 'workclass': 'Private', 'fnlgt': 45612,
           'sex': 'Female', ' capital-gain': 0, ' capital-loss': 0,
           ' hours-per-week': 37, ' native-country': 'United-States'}
 
-url = 'https://udactiy-api.onrender.com/prediction'
+url = 'https://udactiy-api.onrender.com/predict'
 x = requests.post(url, json=inputs, verify=True)
-print(x['status_code'])
+print(x)
