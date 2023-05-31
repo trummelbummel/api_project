@@ -10,4 +10,5 @@ inputs = {'age': 48, 'workclass': 'Private', 'fnlgt': 45612,
 
 url = 'https://udactiy-api.onrender.com/predict'
 x = requests.post(url, json=inputs, verify=True)
-print(x)
+print(x.text)
+print(x.status_code)
